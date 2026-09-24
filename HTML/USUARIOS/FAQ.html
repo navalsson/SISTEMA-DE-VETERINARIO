@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clínica Veterinaria Patitas Felices - FAQ</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #6C4E31;">
+            <div class="container">
+                <a class="navbar-brand fw-bold" href="/HTML/USUARIOS/publicidad.html">Patitas Felices</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item"><a class="nav-link" href="/HTML/USUARIOS/publicidad.html">Inicio</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/HTML/USUARIOS/servicios.html">Servicios</a></li>
+                        <li class="nav-item"><a class="nav-link active" href="/HTML/USUARIOS/FAQ.html">FAQ</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/HTML/USUARIOS/Contacto.html">Contacto</a></li>
+                        <li class="nav-item ms-lg-3"><a class="btn text-white fw-bold" style="background-color: #2E7D32;" href="/HTML/USUARIOS/Reserva1.html">Reservar Cita</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container flex-grow-1 my-5" style="max-width:800px;">
+        <section class="text-center mb-4">
+            <h1 class="fw-bold" style="color: #6C4E31;">Preguntas Frecuentes y Políticas</h1>
+            <p class="text-muted">Resolvemos tus dudas sobre reservas, pagos y normativas de atención en la clínica.</p>
+        </section>
+
+        <div class="accordion" id="faqAccordion">
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                        ¿Qué pasa si necesito cancelar o no puedo asistir a mi cita?
+                    </button>
+                </h2>
+                <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        De acuerdo con nuestra política de negocio, <strong>una vez que la cita ha sido pagada y confirmada, la clínica no emite reembolsos de dinero bajo ninguna circunstancia</strong>. El administrador cambiará el estado a cancelado, pero no se realizarán devoluciones a la tarjeta.
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                        ¿Es obligatorio pagar la cita por adelantado?
+                    </button>
+                </h2>
+                <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        Sí. Ninguna cita queda separada en la agenda si no se ha completado el pago del 100% del servicio a través de la pasarela de pagos al momento de finalizar el proceso de reserva.
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                        ¿Qué ocurre si llego tarde a la hora programada?
+                    </button>
+                </h2>
+                <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        Contamos con un tiempo máximo de tolerancia de 15 minutos. Si el cliente no se presenta pasados los 15 minutos de la hora acordada, el sistema o el administrador aplicarán la inasistencia (No Show) y la cita se perderá.
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                        ¿Atienden todo tipo de animales o mascotas?
+                    </button>
+                </h2>
+                <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        Nuestra infraestructura y medicamentos están especializados exclusivamente en la atención de <strong>perros y gatos</strong>. No registramos citas para animales exóticos.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="text-white text-center py-3 mt-auto" style="background-color: #6C4E31;">
+        <div class="container">
+            <p class="mb-0 small">&copy; 2026 Clínica Veterinaria Patitas Felices. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
