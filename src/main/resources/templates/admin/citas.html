@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Citas | Patitas Felices</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div th:replace="~{fragments/layout-admin :: header}"></div>
+
+<div class="d-flex">
+    <div th:replace="~{fragments/layout-admin :: sidebar(${paginaActiva})}"></div>
+
+    <main class="flex-grow-1 p-4">
+        <h1 class="h4 fw-bold mb-3" style="color:#6C4E31;">Gestión de Citas</h1>
+
+        <div class="card border-0 shadow-sm">
+            <div class="table-responsive">
+                <table class="table align-middle mb-0">
+                    <thead class="table-light">
+                    <tr>
+                        <th>Cliente</th><th>Mascota</th><th>Servicio</th><th>Fecha y Hora</th>
+                        <th>Método de Pago (RN-05)</th><th>Estado</th><th>Acciones</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="cita : ${citas}">
+                        <td>
+                            <span th:each="cliente : ${clientes}" th:if="${cliente.id == cita.clienteId}"
+                                  th:text="${cliente.nombre}"></span>
+                        </td>
+                        <td>
+                            <span th:each="mascota : ${mascotas}" th:if="${mascota.id == cita.mascotaId}"
+                                  th:text="${mascota.nombre}"></span>
+                        </td>
+                        <td>
+                            <span th:each="servicio : ${servicios}" th:if="${servicio.id == cita.servicioId}"
+                                  th:text="${servicio.nombre}"></span>
+                        </td>
+                        <td th:text="${#temporals.format(cita.fechaHora, 'dd MMM - hh:mm a')}"></td>
+                        <td>
+                            <span th:if="${cita.metodoPago == 'Efectivo'}"
+                                  class="badge text-white" style="background-color:#2E7D32;">
+                                Efectivo (5% dscto)
+                            </span>
+                            <span th:unless="${cita.metodoPago == 'Efectivo'}"
+                                  class="badge bg-secondary">
+                                Tarjeta
+                            </span>
+                            <br>
+                            <small th:text="'S/ ' + ${#numbers.formatDecimal(
+                                cita.metodoPago == 'Efectivo' ? cita.montoPagado * 0.95 : cita.montoPagado, 1, 2)}">
+                            </small>
+                        </td>
+                        <td>
+                            <span th:if="${cita.estado == 'Confirmada'}"
+                                  class="badge text-white" style="background-color:#2E7D32;">Confirmada</span>
+                            <span th:if="${cita.estado == 'Cancelada'}"
+                                  class="badge bg-danger">Cancelada</span>
+                            <span th:if="${cita.estado == 'No Show'}"
+                                  class="badge bg-warning text-dark">No Show</span>
+                        </td>
+                        <td>
+                            <a th:href="@{/admin/citas/ver/{id}(id=${cita.id})}"
+                               class="btn btn-sm" style="border:1px solid #6C4E31; color:#6C4E31;">Ver</a>
+                            <a th:href="@{/admin/citas/estado/{id}(id=${cita.id})}"
+                               class="btn btn-sm btn-outline-warning">Cambiar Estado</a>
+                            <a th:href="@{/admin/citas/cancelar/{id}(id=${cita.id})}"
+                               class="btn btn-sm btn-outline-danger"
+                               onclick="return confirm('¿Seguro que deseas cancelar esta cita?')">Cancelar</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</div>
+
+<div th:replace="~{fragments/layout-admin :: footer}"></div>
+
+</body>
+</html>

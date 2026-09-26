@@ -1,14 +1,14 @@
 package com.PatitasFelices.SistemaDeVeterinario.Model;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 public class Cliente {
 
     private Long id;
-    private String Nombre;
-    private String Telefono;
-    private String Email;
+    private String nombre;
+    private String dni;
+    private String telefono;
+    private String email;
     private int citasCompletadas;
     private double gastoTotal;
     private LocalDate fechaRegistro;
@@ -16,37 +16,45 @@ public class Cliente {
 
     public Cliente() {
     }
-    public Cliente(Long id, String Nombre, String Telefono,String email, int citasCompletadas, double gastoTotal, LocalDate fechaRegistro, int citasEsteMes) {
+
+    public Cliente(Long id, String nombre, String dni, String telefono, String email,
+                   int citasCompletadas, double gastoTotal,
+                   LocalDate fechaRegistro, int citasEsteMes) {
         this.id = id;
-        this.Nombre = Nombre;
-        this.Telefono = Telefono;
-        this.Email = email;
+        this.nombre = nombre;
+        this.dni = dni;
+        this.telefono = telefono;
+        this.email = email;
         this.citasCompletadas = citasCompletadas;
         this.gastoTotal = gastoTotal;
         this.fechaRegistro = fechaRegistro;
         this.citasEsteMes = citasEsteMes;
     }
-    public Long getId() {return id;}
-    public void setId(Long id) {this.id = id;}
 
-    public String getNombre() {return Nombre;}
-    public void setNombre(String Nombre) {this.Nombre = Nombre;}
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public String getTelefono() {return Telefono;}
-    public void setTelefono(String Telefono) {this.Telefono = Telefono;}
+    public String getNombre() { return nombre; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
 
-    public String getEmail() {return Email;}
-    public void setEmail(String Email) {this.Email = Email;}
+    public String getDni() { return dni; }
+    public void setDni(String dni) { this.dni = dni; }
 
-    public int getCitasCompletadas() {return citasCompletadas;}
-    public void setCitasCompletadas(int citasCompletadas) {this.citasCompletadas = citasCompletadas;}
+    public String getTelefono() { return telefono; }
+    public void setTelefono(String telefono) { this.telefono = telefono; }
 
-    public double getGastoTotal() {return gastoTotal;}
-    public void setGastoTotal(double gastoTotal) {this.gastoTotal = gastoTotal;}
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 
-    public LocalDate getFechaRegistro() {return fechaRegistro;}
-    public void setFechaRegistro(LocalDate fechaRegistro) {this.fechaRegistro = fechaRegistro;}
+    public int getCitasCompletadas() { return citasCompletadas; }
+    public void setCitasCompletadas(int citasCompletadas) { this.citasCompletadas = citasCompletadas; }
 
-    public int getCitasEsteMes() {return citasEsteMes;}
-    public void setCitasEsteMes(int citasEsteMes) {this.citasEsteMes = citasEsteMes;}
+    public double getGastoTotal() { return gastoTotal; }
+    public void setGastoTotal(double gastoTotal) { this.gastoTotal = gastoTotal; }
+
+    public LocalDate getFechaRegistro() { return fechaRegistro; }
+    public void setFechaRegistro(LocalDate fechaRegistro) { this.fechaRegistro = fechaRegistro; }
+
+    public int getCitasEsteMes() { return citasEsteMes; }
+    public void setCitasEsteMes(int citasEsteMes) { this.citasEsteMes = citasEsteMes; }
 }

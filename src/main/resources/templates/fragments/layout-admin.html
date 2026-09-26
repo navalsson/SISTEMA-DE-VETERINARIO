@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<!-- FRAGMENT: Header -->
+<div th:fragment="header">
+    <header class="navbar navbar-dark px-3 py-2" style="background-color: #6C4E31;">
+        <a class="navbar-brand fw-bold mb-0" href="/admin/metricas">
+            Patitas Felices <span class="badge bg-light text-dark ms-1">Admin</span>
+        </a>
+        <a class="text-white text-decoration-none small" href="/admin/login">Cerrar Sesión ⏻</a>
+    </header>
+</div>
+
+<!-- FRAGMENT: Sidebar (recibe cuál link está activo como parámetro) -->
+<div th:fragment="sidebar(paginaActiva)">
+    <aside class="p-3" style="width:230px; background-color:#F9F6F0; min-height: calc(100vh - 56px);">
+        <nav class="nav flex-column gap-1">
+            <a class="nav-link"
+               th:classappend="${paginaActiva == 'metricas'} ? 'active text-white' : ''"
+               th:style="${paginaActiva == 'metricas'} ? 'background-color:#6C4E31;' : 'color:#6C4E31;'"
+               href="/admin/metricas">Métricas</a>
+
+            <a class="nav-link"
+               th:classappend="${paginaActiva == 'citas'} ? 'active text-white' : ''"
+               th:style="${paginaActiva == 'citas'} ? 'background-color:#6C4E31;' : 'color:#6C4E31;'"
+               href="/admin/citas">Gestión de Citas</a>
+
+            <a class="nav-link"
+               th:classappend="${paginaActiva == 'servicios'} ? 'active text-white' : ''"
+               th:style="${paginaActiva == 'servicios'} ? 'background-color:#6C4E31;' : 'color:#6C4E31;'"
+               href="/admin/servicios">Gestión de Servicios</a>
+
+            <a class="nav-link"
+               th:classappend="${paginaActiva == 'clientes'} ? 'active text-white' : ''"
+               th:style="${paginaActiva == 'clientes'} ? 'background-color:#6C4E31;' : 'color:#6C4E31;'"
+               href="/admin/clientes">Gestión de Usuarios</a>
+
+            <a class="nav-link"
+               th:classappend="${paginaActiva == 'mascotas'} ? 'active text-white' : ''"
+               th:style="${paginaActiva == 'mascotas'} ? 'background-color:#6C4E31;' : 'color:#6C4E31;'"
+               href="/admin/mascotas">Gestión de Mascotas</a>
+        </nav>
+    </aside>
+</div>
+
+<!-- FRAGMENT: Footer -->
+<div th:fragment="footer">
+    <footer class="text-center text-muted small py-3 border-top">
+        <p class="mb-0">&copy; 2026 Clínica Veterinaria Patitas Felices. Panel de Administración.</p>
+    </footer>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Formulario Mascota | Patitas Felices</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div th:replace="~{fragments/layout-admin :: header}"></div>
+
+<div class="d-flex">
+    <div th:replace="~{fragments/layout-admin :: sidebar(${paginaActiva})}"></div>
+
+    <main class="flex-grow-1 p-4">
+        <h1 class="h4 fw-bold mb-3" style="color:#6C4E31;">
+            <span th:if="${mascota.id == null}">Nueva Mascota</span>
+            <span th:if="${mascota.id != null}">Editar Mascota</span>
+        </h1>
+
+        <div class="card border-0 shadow-sm p-4" style="max-width:500px;">
+            <form th:action="@{/admin/mascotas/guardar}" th:object="${mascota}" method="post">
+
+                <input type="hidden" th:field="*{id}">
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold small">Nombre de la mascota</label>
+                    <input type="text" class="form-control" th:field="*{nombre}" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold small">Especie</label>
+                    <select class="form-select" th:field="*{especie}" required>
+                        <option value="">Selecciona</option>
+                        <option value="Perro">Perro</option>
+                        <option value="Gato">Gato</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold small">Raza</label>
+                    <input type="text" class="form-control" th:field="*{raza}" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold small">Edad</label>
+                    <input type="text" class="form-control" th:field="*{edad}" placeholder="Ej. 2 años" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold small">Sexo</label>
+                    <select class="form-select" th:field="*{sexo}" required>
+                        <option value="">Selecciona</option>
+                        <option value="Macho">Macho</option>
+                        <option value="Hembra">Hembra</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold small">Peso (kg)</label>
+                    <input type="number" step="0.1" class="form-control" th:field="*{peso}" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold small">Dueño</label>
+                    <select class="form-select" th:field="*{clienteId}" required>
+                        <option value="">Selecciona un cliente</option>
+                        <option th:each="cliente : ${clientes}"
+                                th:value="${cliente.id}"
+                                th:text="${cliente.nombre}"></option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn text-white fw-bold" style="background-color:#2E7D32;">
+                    Guardar
+                </button>
+                <a href="/admin/mascotas" class="btn btn-secondary">Cancelar</a>
+            </form>
+        </div>
+    </main>
+</div>
+
+<div th:replace="~{fragments/layout-admin :: footer}"></div>
+
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Cambiar Estado | Patitas Felices</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div th:replace="~{fragments/layout-admin :: header}"></div>
+
+<div class="d-flex">
+    <div th:replace="~{fragments/layout-admin :: sidebar(${paginaActiva})}"></div>
+
+    <main class="flex-grow-1 p-4">
+        <h1 class="h4 fw-bold mb-3" style="color:#6C4E31;">Cambiar Estado de la Cita</h1>
+
+        <div class="card border-0 shadow-sm p-4" style="max-width:500px;">
+            <form th:action="@{/admin/citas/estado/guardar}" th:object="${cita}" method="post">
+
+                <input type="hidden" th:field="*{id}">
+                <input type="hidden" th:field="*{clienteId}">
+                <input type="hidden" th:field="*{mascotaId}">
+                <input type="hidden" th:field="*{servicioId}">
+                <input type="hidden" th:field="*{fechaHora}">
+                <input type="hidden" th:field="*{metodoPago}">
+                <input type="hidden" th:field="*{montoPagado}">
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold small">Nuevo estado</label>
+                    <select class="form-select" th:field="*{estado}">
+                        <option value="Confirmada">Confirmada</option>
+                        <option value="No Show">No Show</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn text-white fw-bold" style="background-color:#2E7D32;">
+                    Guardar Estado
+                </button>
+                <a href="/admin/citas" class="btn btn-secondary">Cancelar</a>
+            </form>
+        </div>
+    </main>
+</div>
+
+<div th:replace="~{fragments/layout-admin :: footer}"></div>
+
+</body>
+</html>

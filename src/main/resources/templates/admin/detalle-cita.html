@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalle de Cita | Patitas Felices</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div th:replace="~{fragments/layout-admin :: header}"></div>
+
+<div class="d-flex">
+    <div th:replace="~{fragments/layout-admin :: sidebar(${paginaActiva})}"></div>
+
+    <main class="flex-grow-1 p-4">
+        <h1 class="h4 fw-bold mb-3" style="color:#6C4E31;">Detalle de la Cita</h1>
+
+        <div class="card border-0 shadow-sm p-4" style="max-width:500px;">
+            <p class="d-flex justify-content-between small border-bottom pb-2">
+                <span>Cliente</span>
+                <strong>
+                    <span th:each="cliente : ${clientes}" th:if="${cliente.id == cita.clienteId}" th:text="${cliente.nombre}"></span>
+                </strong>
+            </p>
+            <p class="d-flex justify-content-between small border-bottom pb-2">
+                <span>Mascota</span>
+                <strong>
+                    <span th:each="mascota : ${mascotas}" th:if="${mascota.id == cita.mascotaId}" th:text="${mascota.nombre}"></span>
+                </strong>
+            </p>
+            <p class="d-flex justify-content-between small border-bottom pb-2">
+                <span>Servicio</span>
+                <strong>
+                    <span th:each="servicio : ${servicios}" th:if="${servicio.id == cita.servicioId}" th:text="${servicio.nombre}"></span>
+                </strong>
+            </p>
+            <p class="d-flex justify-content-between small border-bottom pb-2">
+                <span>Fecha y Hora</span>
+                <strong th:text="${#temporals.format(cita.fechaHora, 'dd MMM yyyy - hh:mm a')}"></strong>
+            </p>
+            <p class="d-flex justify-content-between small border-bottom pb-2">
+                <span>Método de Pago</span>
+                <strong th:text="${cita.metodoPago}"></strong>
+            </p>
+            <p class="d-flex justify-content-between small mb-0">
+                <span>Estado</span>
+                <strong th:text="${cita.estado}"></strong>
+            </p>
+        </div>
+
+        <a href="/admin/citas" class="btn btn-secondary mt-3">Volver</a>
+    </main>
+</div>
+
+<div th:replace="~{fragments/layout-admin :: footer}"></div>
+
+</body>
+</html>
