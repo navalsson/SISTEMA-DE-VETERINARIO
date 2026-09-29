@@ -80,4 +80,7 @@ public class CitaController {
                 .ifPresent(c -> c.setEstado("Cancelada"));
         return "redirect:/admin/citas";
     }
+    public List<Cita> obtenerListaCitas() {
+        return citas;
+    }
 }
