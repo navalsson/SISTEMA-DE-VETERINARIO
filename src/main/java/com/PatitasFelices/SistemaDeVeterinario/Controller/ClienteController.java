@@ -1,84 +1,66 @@
 package com.PatitasFelices.SistemaDeVeterinario.Controller;
 
 import com.PatitasFelices.SistemaDeVeterinario.Model.Cliente;
+import com.PatitasFelices.SistemaDeVeterinario.service.ClienteService;
+import com.PatitasFelices.SistemaDeVeterinario.service.ReglaNegocioService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import jakarta.validation.Valid;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 @Controller
 @RequestMapping("/admin/clientes")
-
 public class ClienteController {
-    private List<Cliente> clientes = new ArrayList<>();
-    private Long siguienteId = 1L;
 
-    public ClienteController() {
-        clientes.add(new Cliente(siguienteId++, "Juan Pérez", "45678912", "987654321", "juan@example.com",
-                3, 90.0, LocalDate.of(2025, 3, 10), 1));
-        clientes.add(new Cliente(siguienteId++, "María Torres", "41234567", "945112233", "maria@example.com",
-                1, 80.0, LocalDate.of(2026, 1, 5), 1));
-        clientes.add(new Cliente(siguienteId++, "Lucía Gómez", "48765432", "912334556", "lucia@example.com",
-                6, 350.0, LocalDate.of(2024, 8, 20), 4));
+    @Autowired
+    private ClienteService clienteService;
+    @Autowired private ReglaNegocioService reglaService;
 
-    }
 
-    // Lista de clientes
     @GetMapping
     public String listar(Model model) {
         model.addAttribute("paginaActiva", "clientes");
-        model.addAttribute("clientes", clientes);
+        model.addAttribute("clientes", clienteService.listar());
+        model.addAttribute("reglas", reglaService);
         return "admin/clientes";
     }
 
-    // Muestra formulario vacío (Nuevo)
     @GetMapping("/nuevo")
-    public String mostrarFormularioNuevo(Model model) {
+    public String nuevo(Model model) {
         model.addAttribute("paginaActiva", "clientes");
         model.addAttribute("cliente", new Cliente());
         return "admin/formulario-cliente";
     }
 
-    // Muestra formulario con datos precargados (Editar)
     @GetMapping("/editar/{id}")
-    public String mostrarFormularioEditar(@PathVariable Long id, Model model) {
-        Cliente cliente = clientes.stream()
-                .filter(c -> c.getId().equals(id))
-                .findFirst()
-                .orElse(new Cliente());
-
+    public String editar(@PathVariable Long id, Model model) {
         model.addAttribute("paginaActiva", "clientes");
-        model.addAttribute("cliente", cliente);
+        model.addAttribute("cliente", clienteService.buscarPorId(id));
         return "admin/formulario-cliente";
     }
 
-    // Guarda (crea o actualiza)
     @PostMapping("/guardar")
-    public String guardar(@ModelAttribute Cliente cliente) {
-        if (cliente.getId() == null) {
-            // Es nuevo
-            cliente.setId(siguienteId++);
-            cliente.setFechaRegistro(LocalDate.now());
-            clientes.add(cliente);
-        } else {
-            // Es edición: quitamos el viejo y agregamos el actualizado
-            clientes.removeIf(c -> c.getId().equals(cliente.getId()));
-            clientes.add(cliente);
+    public String guardar(@Valid @ModelAttribute Cliente cliente, BindingResult result, Model model) {
+        // Unicidad: no puede haber dos clientes con el mismo DNI
+        Cliente existente = clienteService.buscarPorDni(cliente.getDni());
+        if (existente != null && !existente.getId().equals(cliente.getId())) {
+            result.rejectValue("dni", "duplicado", "Ya existe un cliente registrado con ese DNI");
         }
+        if (result.hasErrors()) {                       // si hay errores, vuelve al formulario
+            model.addAttribute("paginaActiva", "clientes");
+            return "admin/formulario-cliente";
+        }
+        clienteService.guardar(cliente);
         return "redirect:/admin/clientes";
     }
 
-    // Elimina
     @GetMapping("/eliminar/{id}")
     public String eliminar(@PathVariable Long id) {
-        clientes.removeIf(c -> c.getId().equals(id));
+        clienteService.eliminar(id);
         return "redirect:/admin/clientes";
     }
 
-    public List<Cliente> obtenerListaClientes() {
-        return clientes;
-    }
+
 }

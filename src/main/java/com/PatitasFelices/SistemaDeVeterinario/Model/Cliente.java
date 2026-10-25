@@ -1,17 +1,41 @@
 package com.PatitasFelices.SistemaDeVeterinario.Model;
 
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
+
 import java.time.LocalDate;
 
+@Entity
+@Table(name = "clientes")
 public class Cliente {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotBlank(message = "El nombre es obligatorio")
+    @Size(max = 100, message = "El nombre no puede pasar de 100 caracteres")
+    @Column(nullable = false, length = 100)
     private String nombre;
+    @NotBlank(message = "El DNI es obligatorio")
+    @Pattern(regexp = "\\d{8}", message = "El DNI debe tener exactamente 8 dígitos")
+    @Column(nullable = false, unique = true, length = 8)
     private String dni;
+    @NotBlank(message = "El teléfono es obligatorio")
+    @Pattern(regexp = "\\d{9}", message = "El teléfono debe tener 9 dígitos")
+    @Column(nullable = false, length = 9)
     private String telefono;
+    @NotBlank(message = "El email es obligatorio")
+    @Email(message = "El email no tiene un formato válido")
+    @Size(max = 100, message = "El email no puede pasar de 100 caracteres")
+    @Column(nullable = false, length = 100)
     private String email;
+    @Min(value = 0, message = "No puede ser negativo")
     private int citasCompletadas;
+    @DecimalMin(value = "0.0", message = "El gasto no puede ser negativo")
     private double gastoTotal;
     private LocalDate fechaRegistro;
+    @Min(value = 0, message = "No puede ser negativo")
     private int citasEsteMes;
 
     public Cliente() {

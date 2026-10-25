@@ -1,14 +1,39 @@
 package com.PatitasFelices.SistemaDeVeterinario.Model;
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.time.LocalDateTime;
 
+@Entity
+@Table(name = "citas")
 public class Cita {
+    @Id                                                   // clave primaria
+    @GeneratedValue(strategy = GenerationType.IDENTITY)   // la BD genera el id
     private Long id;
+    @NotNull(message = "Selecciona un cliente")
+    @Column(name = "cliente_id", nullable = false)
     private Long clienteId;
+    @NotNull(message = "Selecciona una mascota")
+    @Column(name = "mascota_id", nullable = false)
     private Long mascotaId;
+    @NotNull(message = "Selecciona un servicio")
+    @Column(name = "servicio_id", nullable = false)
     private Long servicioId;
+
+    @NotNull(message = "Ingresa la fecha y la hora")
+    @Column(name = "fecha_hora", nullable = false)
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime fechaHora;
+
+    @Pattern(regexp = "Confirmada|Completada|No Show|Cancelada", message = "Estado no válido")
+    @Column(nullable = false)
     private String estado;
+    @Pattern(regexp = "Efectivo|Tarjeta", message = "El método de pago debe ser Efectivo o Tarjeta")
     private String metodoPago;   // RN-05
+    @DecimalMin(value = "0.0", message = "El monto no puede ser negativo")
     private double montoPagado;
 
     public Cita() {

@@ -19,13 +19,14 @@
         </h1>
 
         <div class="card border-0 shadow-sm p-4" style="max-width:500px;">
-            <form th:action="@{/admin/servicios/guardar}" th:object="${servicio}" method="post">
+            <form novalidate th:action="@{/admin/servicios/guardar}" th:object="${servicio}" method="post">
 
                 <input type="hidden" th:field="*{id}">
 
                 <div class="mb-3">
                     <label class="form-label fw-bold small">Nombre del servicio</label>
                     <input type="text" class="form-control" th:field="*{nombre}" required>
+                    <div class="text-danger small mt-1" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></div>
                 </div>
 
                 <div class="mb-3">
@@ -36,11 +37,20 @@
                         <option value="Estética">Estética</option>
                         <option value="Farmacia">Farmacia</option>
                     </select>
+                    <div class="text-danger small mt-1" th:if="${#fields.hasErrors('categoria')}" th:errors="*{categoria}"></div>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label fw-bold small">Precio (S/)</label>
                     <input type="number" step="0.01" class="form-control" th:field="*{precio}" required>
+                    <div class="text-danger small mt-1" th:if="${#fields.hasErrors('precio')}" th:errors="*{precio}"></div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold small">Descripción</label>
+                    <textarea class="form-control" rows="3" maxlength="500" th:field="*{descripcion}"
+                              placeholder="Lo que verá el cliente en el catálogo de servicios"></textarea>
+                    <div class="text-danger small mt-1" th:if="${#fields.hasErrors('descripcion')}" th:errors="*{descripcion}"></div>
                 </div>
 
                 <div class="mb-3">
@@ -49,6 +59,7 @@
                         <option value="Activo">Activo</option>
                         <option value="Inactivo">Inactivo</option>
                     </select>
+                    <div class="text-danger small mt-1" th:if="${#fields.hasErrors('estado')}" th:errors="*{estado}"></div>
                 </div>
 
                 <button type="submit" class="btn text-white fw-bold" style="background-color:#2E7D32;">

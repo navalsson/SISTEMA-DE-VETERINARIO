@@ -26,7 +26,11 @@
                     <thead class="table-light">
                     <tr>
                         <th>Nombre</th><th>DNI</th><th>Teléfono</th><th>Email</th>
-                        <th>Citas Completadas</th><th>Fidelidad (RN-01)</th><th>Acciones</th>
+                        <th>Citas Completadas</th>
+                        <th>Citas este mes</th>
+                        <th>Gasto acumulado</th>
+                        <th>Beneficios</th>
+                        <th>Acciones</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -36,15 +40,22 @@
                         <td th:text="${cliente.telefono}"></td>
                         <td th:text="${cliente.email}"></td>
                         <td th:text="${cliente.citasCompletadas}"></td>
+                        <td th:text="${cliente.citasEsteMes}"></td>
+
+                       
                         <td>
-                            <span th:if="${cliente.citasCompletadas >= 5}"
-                                  class="badge text-white" style="background-color:#2E7D32;">
-                                Elegible 15%
-                            </span>
-                            <span th:unless="${cliente.citasCompletadas >= 5}"
-                                  class="badge bg-secondary">
-                                Sin descuento
-                            </span>
+                            <strong th:text="'S/ ' + ${#numbers.formatDecimal(cliente.gastoTotal, 1, 2)}"></strong>
+                            <br>
+                            <span class="badge text-white" style="background-color:#2E7D32;"
+                                  th:if="${reglas.esVip(cliente)}">VIP: llegó a S/ 300</span>
+                            <small class="text-muted" th:unless="${reglas.esVip(cliente)}"
+                                   th:text="'Faltan S/ ' + ${#numbers.formatDecimal(300 - cliente.gastoTotal, 1, 2)} + ' para VIP'"></small>
+                        </td>
+
+                        <td>
+                            <span th:if="${reglas.tieneDescuentoFidelidad(cliente)}" class="badge text-white" style="background-color:#2E7D32;">15% dscto</span>
+                            <span th:if="${reglas.esVip(cliente)}" class="badge bg-warning text-dark">VIP</span>
+                            <span th:if="${reglas.tieneServicioGratis(cliente)}" class="badge bg-primary">Servicio gratis</span>
                         </td>
                         <td>
                             <a th:href="@{/admin/clientes/editar/{id}(id=${cliente.id})}"

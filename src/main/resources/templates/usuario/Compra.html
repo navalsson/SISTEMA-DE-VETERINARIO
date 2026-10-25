@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comprar producto - Patitas Felices</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="d-flex flex-column min-vh-100" style="background-color:#FFF8DC;">
+
+<div th:replace="~{fragments/layout-usuario :: header('servicios')}"></div>
+
+<main class="container flex-grow-1 my-5" style="max-width:700px;">
+
+    <section class="text-center mb-3">
+        <h1 class="fw-bold" style="color:#6C4E31;">Comprar Producto</h1>
+        <p class="text-muted">Completa tus datos y realiza el pago para confirmar tu compra.</p>
+    </section>
+
+    <div class="alert alert-danger small" th:if="${param.error}">
+        No se pudo completar la compra: revisa la cantidad, no puede superar el stock disponible.
+    </div>
+
+    <!-- Resumen del producto -->
+    <div class="card border-0 mb-4" style="background-color:#F9F6F0;">
+        <div class="card-body">
+            <h2 class="h6 fw-bold mb-3" style="color:#6C4E31;">Resumen del producto</h2>
+            <p class="d-flex justify-content-between small mb-2">
+                <span>Producto</span><span th:text="${producto.nombre}">Antipulgas</span>
+            </p>
+            <p class="d-flex justify-content-between small mb-2">
+                <span>Categoría</span><span th:text="${producto.categoria}">Antipulgas</span>
+            </p>
+            <p class="d-flex justify-content-between small mb-2">
+                <span>Stock disponible</span><span th:text="${producto.stock}">20</span>
+            </p>
+            <p class="d-flex justify-content-between fw-bold mb-0" style="color:#6C4E31;">
+                <span>Precio unitario</span>
+                <span th:text="'S/ ' + ${#numbers.formatDecimal(producto.precio, 1, 2)}">S/ 0.00</span>
+            </p>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0 p-4">
+        <form th:action="@{/usuario/compra/confirmar}" method="post">
+
+            <input type="hidden" name="productoId" th:value="${producto.id}">
+
+            <h2 class="h6 fw-bold mb-3" style="color:#6C4E31;">Cantidad</h2>
+            <div class="mb-4" style="max-width:160px;">
+                <label for="cantidad" class="form-label small fw-bold" style="color:#6C4E31;">Unidades</label>
+                <input type="number" class="form-control" id="cantidad" name="cantidad"
+                       min="1" th:max="${producto.stock}" value="1" required>
+            </div>
+
+            <h2 class="h6 fw-bold mb-3" style="color:#6C4E31;">Datos del Cliente</h2>
+            <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                    <label for="nombre" class="form-label small fw-bold" style="color:#6C4E31;">Nombre completo</label>
+                    <input type="text" class="form-control" id="nombre" name="nombre"
+                           placeholder="Ej. Juan Pérez" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="dni" class="form-label small fw-bold" style="color:#6C4E31;">DNI</label>
+                    <input type="text" class="form-control" id="dni" name="dni" maxlength="8" pattern="\d{8}" title="El DNI debe tener 8 dígitos"
+                           placeholder="Ej. 45678912" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="telefono" class="form-label small fw-bold" style="color:#6C4E31;">Teléfono</label>
+                    <input type="tel" class="form-control" id="telefono" pattern="\d{9}" title="El teléfono debe tener 9 dígitos" name="telefono"
+                           placeholder="Ej. 987654321" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="email" class="form-label small fw-bold" style="color:#6C4E31;">Email</label>
+                    <input type="email" class="form-control" id="email" name="email"
+                           placeholder="Ej. juan@example.com" required>
+                </div>
+            </div>
+
+            <h2 class="h6 fw-bold mb-3" style="color:#6C4E31;">Método de Pago</h2>
+            <div class="btn-group w-100 mb-3" role="group" aria-label="Método de pago">
+                <input type="radio" class="btn-check" name="metodoPago" id="pagoTarjeta" value="Tarjeta" checked>
+                <label class="btn btn-outline-secondary" for="pagoTarjeta">Tarjeta (5% dscto)</label>
+
+                <input type="radio" class="btn-check" name="metodoPago" id="pagoEfectivo" value="Efectivo">
+                <label class="btn btn-outline-secondary" for="pagoEfectivo">Efectivo</label>
+            </div>
+
+            <div class="alert alert-light border small">
+                El total final se calcula al confirmar, aplicando tus descuentos si corresponden.
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <a class="btn" style="border:1px solid #6C4E31; color:#6C4E31;"
+                   th:href="@{/usuario/servicios}">Volver</a>
+                <button type="submit" class="btn text-white fw-bold" style="background-color:#2E7D32;">
+                    Pagar y Confirmar Compra
+                </button>
+            </div>
+
+        </form>
+    </div>
+
+</main>
+
+<div th:replace="~{fragments/layout-usuario :: footer}"></div>
+<div th:replace="~{fragments/layout-usuario :: scripts}"></div>
+
+</body>
+</html>

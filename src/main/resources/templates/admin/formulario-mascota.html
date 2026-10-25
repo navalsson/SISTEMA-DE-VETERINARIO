@@ -19,13 +19,14 @@
         </h1>
 
         <div class="card border-0 shadow-sm p-4" style="max-width:500px;">
-            <form th:action="@{/admin/mascotas/guardar}" th:object="${mascota}" method="post">
+            <form novalidate th:action="@{/admin/mascotas/guardar}" th:object="${mascota}" method="post">
 
                 <input type="hidden" th:field="*{id}">
 
                 <div class="mb-3">
                     <label class="form-label fw-bold small">Nombre de la mascota</label>
                     <input type="text" class="form-control" th:field="*{nombre}" required>
+                    <div class="text-danger small mt-1" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></div>
                 </div>
 
                 <div class="mb-3">
@@ -35,16 +36,27 @@
                         <option value="Perro">Perro</option>
                         <option value="Gato">Gato</option>
                     </select>
+                    <div class="text-danger small mt-1" th:if="${#fields.hasErrors('especie')}" th:errors="*{especie}"></div>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label fw-bold small">Raza</label>
                     <input type="text" class="form-control" th:field="*{raza}" required>
+                    <div class="text-danger small mt-1" th:if="${#fields.hasErrors('raza')}" th:errors="*{raza}"></div>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label fw-bold small">Edad</label>
-                    <input type="text" class="form-control" th:field="*{edad}" placeholder="Ej. 2 años" required>
+                    <div class="input-group">
+                        <input type="number" min="0" class="form-control" th:field="*{edad}"
+                               placeholder="Ej. 5" required>
+                        <select name="unidadEdad" class="form-select" style="max-width:95px;" aria-label="Unidad de edad">
+                            <option value="meses" selected>Meses</option>
+                            <option value="anios">Años</option>
+                        </select>
+                    </div>
+                    <div class="text-danger small mt-1" th:if="${#fields.hasErrors('edad')}" th:errors="*{edad}"></div>
+                    <div class="form-text">Se guarda en meses. Si eliges Años, se convierte automáticamente.</div>
                 </div>
 
                 <div class="mb-3">
@@ -54,11 +66,13 @@
                         <option value="Macho">Macho</option>
                         <option value="Hembra">Hembra</option>
                     </select>
+                    <div class="text-danger small mt-1" th:if="${#fields.hasErrors('sexo')}" th:errors="*{sexo}"></div>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label fw-bold small">Peso (kg)</label>
                     <input type="number" step="0.1" class="form-control" th:field="*{peso}" required>
+                    <div class="text-danger small mt-1" th:if="${#fields.hasErrors('peso')}" th:errors="*{peso}"></div>
                 </div>
 
                 <div class="mb-3">
@@ -69,6 +83,7 @@
                                 th:value="${cliente.id}"
                                 th:text="${cliente.nombre}"></option>
                     </select>
+                    <div class="text-danger small mt-1" th:if="${#fields.hasErrors('clienteId')}" th:errors="*{clienteId}"></div>
                 </div>
 
                 <button type="submit" class="btn text-white fw-bold" style="background-color:#2E7D32;">

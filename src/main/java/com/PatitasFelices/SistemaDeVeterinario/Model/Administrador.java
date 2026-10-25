@@ -1,8 +1,16 @@
 package com.PatitasFelices.SistemaDeVeterinario.Model;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "administradores")
 public class Administrador {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(nullable = false, unique = true, length = 100)
     private String usuario;
+    @Column(nullable = false)
     private String password;
 
     public Administrador() {

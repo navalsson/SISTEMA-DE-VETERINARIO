@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Métricas | Patitas Felices</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div th:replace="~{fragments/layout-admin :: header}"></div>
+
+<div class="d-flex">
+    <div th:replace="~{fragments/layout-admin :: sidebar(${paginaActiva})}"></div>
+
+    <main class="flex-grow-1 p-4">
+        <h1 class="h4 fw-bold mb-1" style="color:#6C4E31;">Métricas del Negocio</h1>
+        <p class="text-muted small mb-3">Valores por día: 5 días anteriores, hoy y los próximos 4 días.</p>
+
+        <div class="row g-4">
+
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h2 class="h6 fw-bold mb-0" style="color:#6C4E31;">Citas por día</h2>
+                            <span class="badge text-white" style="background-color:#2E7D32;">
+                                Hoy: <span id="hoy-citas">0</span>
+                            </span>
+                        </div>
+                        <canvas id="graficoCitas" height="140"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h2 class="h6 fw-bold mb-0" style="color:#6C4E31;">Ingresos por día (S/)</h2>
+                            <span class="badge text-white" style="background-color:#2E7D32;">
+                                Hoy: S/ <span id="hoy-ingresos">0.00</span>
+                            </span>
+                        </div>
+                        <canvas id="graficoIngresos" height="140"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h2 class="h6 fw-bold mb-0" style="color:#6C4E31;">Citas canceladas por día</h2>
+                            <span class="badge bg-danger">
+                                Hoy: <span id="hoy-canceladas">0</span>
+                            </span>
+                        </div>
+                        <canvas id="graficoCanceladas" height="140"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h2 class="h6 fw-bold mb-0" style="color:#6C4E31;">Citas completadas por día</h2>
+                            <span class="badge bg-primary">
+                                Hoy: <span id="hoy-completadas">0</span>
+                            </span>
+                        </div>
+                        <canvas id="graficoCompletadas" height="140"></canvas>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+</div>
+
+<div th:replace="~{fragments/layout-admin :: footer}"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script th:inline="javascript">
+    // Datos calculados en el backend (MetricasService)
+    const etiquetas   = /*[[${etiquetas}]]*/ [];
+    const indiceHoy   = /*[[${indiceHoy}]]*/ 5;
+    const citas       = /*[[${citas}]]*/ [];
+    const ingresos    = /*[[${ingresos}]]*/ [];
+    const canceladas  = /*[[${canceladas}]]*/ [];
+    const completadas = /*[[${completadas}]]*/ [];
+
+    // Escribe el valor sobre cada punto, para poder comparar con los datos reales
+    const valoresSobrePuntos = {
+        id: 'valoresSobrePuntos',
+        afterDatasetsDraw(chart) {
+            const ctx = chart.ctx;
+            const dinero = chart.options.plugins.valoresSobrePuntos.dinero;
+            chart.getDatasetMeta(0).data.forEach((punto, i) => {
+                const v = chart.data.datasets[0].data[i];
+                ctx.save();
+                ctx.font = 'bold 12px sans-serif';
+                ctx.fillStyle = '#6C4E31';
+                ctx.textAlign = 'center';
+                ctx.fillText(dinero ? v.toFixed(2) : v, punto.x, punto.y - 10);
+                ctx.restore();
+            });
+        }
+    };
+
+    function crearGrafico(idCanvas, titulo, datos, color, dinero) {
+        new Chart(document.getElementById(idCanvas), {
+            type: 'line',
+            data: {
+                labels: etiquetas,
+                datasets: [{
+                    label: titulo,
+                    data: datos,
+                    borderColor: color,
+                    backgroundColor: color,
+                    tension: 0.25,
+                    pointRadius: 5
+                }]
+            },
+            options: {
+                layout: { padding: { top: 22 } },
+                plugins: {
+                    legend: { display: false },
+                    valoresSobrePuntos: { dinero: dinero }
+                },
+                scales: {
+                    y: { beginAtZero: true, grace: '15%', ticks: { precision: 0 } }
+                }
+            },
+            plugins: [valoresSobrePuntos]
+        });
+    }
+
+    crearGrafico('graficoCitas',       'Citas',       citas,       '#6C4E31', false);
+    crearGrafico('graficoIngresos',    'Ingresos',    ingresos,    '#2E7D32', true);
+    crearGrafico('graficoCanceladas',  'Canceladas',  canceladas,  '#dc3545', false);
+    crearGrafico('graficoCompletadas', 'Completadas', completadas, '#0d6efd', false);
+
+    // Totales de hoy (recuadros de arriba de cada gráfico)
+    document.getElementById('hoy-citas').textContent       = citas[indiceHoy];
+    document.getElementById('hoy-ingresos').textContent    = ingresos[indiceHoy].toFixed(2);
+    document.getElementById('hoy-canceladas').textContent  = canceladas[indiceHoy];
+    document.getElementById('hoy-completadas').textContent = completadas[indiceHoy];
+</script>
+
+</body>
+</html>
