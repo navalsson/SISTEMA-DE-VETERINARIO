@@ -1,83 +1,107 @@
 package com.PatitasFelices.SistemaDeVeterinario.Controller;
 
 import com.PatitasFelices.SistemaDeVeterinario.Model.Cita;
+import com.PatitasFelices.SistemaDeVeterinario.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
+import jakarta.validation.Valid;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDate;
 
 @Controller
 @RequestMapping("/admin/citas")
 public class CitaController {
-    private List<Cita> citas = new ArrayList<>();
-    private Long siguienteId = 1L;
 
-    @Autowired
-    private ClienteController clienteController;
+    @Autowired private CitaService citaService;
+    @Autowired private ClienteService clienteService;
+    @Autowired private MascotaService mascotaService;
+    @Autowired private ServicioService servicioService;
+    @Autowired private ReservaService reservaService;
+    @Autowired private HorarioService horarioService;
 
-    @Autowired
-    private MascotaController mascotaController;
-
-    @Autowired
-    private ServicioController servicioController;
-
-    public CitaController() {
-        citas.add(new Cita(siguienteId++, 1L, 1L, 1L,
-                LocalDateTime.of(2026, 9, 3, 11, 0), "Confirmada", "Tarjeta", 30.00));
-        citas.add(new Cita(siguienteId++, 2L, 2L, 2L,
-                LocalDateTime.of(2026, 9, 3, 9, 30), "Confirmada", "Efectivo", 80.00));
-        citas.add(new Cita(siguienteId++, 3L, 3L, 3L,
-                LocalDateTime.of(2026, 9, 1, 16, 0), "Confirmada", "Efectivo", 50.00));
+    private void cargarListas(Model model) {
+        model.addAttribute("paginaActiva", "citas");
+        model.addAttribute("clientes", clienteService.listar());
+        model.addAttribute("mascotas", mascotaService.listar());
+        model.addAttribute("servicios", servicioService.listar());
     }
+
 
     @GetMapping
     public String listar(Model model) {
-        model.addAttribute("paginaActiva", "citas");
-        model.addAttribute("citas", citas);
-        model.addAttribute("clientes", clienteController.obtenerListaClientes());
-        model.addAttribute("mascotas", mascotaController.obtenerListaMascotas());
-        model.addAttribute("servicios", servicioController.obtenerListaServicios());
+        cargarListas(model);
+        model.addAttribute("citas", citaService.listar());
         return "admin/citas";
     }
 
     @GetMapping("/ver/{id}")
     public String verDetalle(@PathVariable Long id, Model model) {
-        Cita cita = citas.stream().filter(c -> c.getId().equals(id)).findFirst().orElse(new Cita());
-        model.addAttribute("paginaActiva", "citas");
-        model.addAttribute("cita", cita);
-        model.addAttribute("clientes", clienteController.obtenerListaClientes());
-        model.addAttribute("mascotas", mascotaController.obtenerListaMascotas());
-        model.addAttribute("servicios", servicioController.obtenerListaServicios());
+        cargarListas(model);
+        model.addAttribute("cita", citaService.buscarPorId(id));
         return "admin/detalle-cita";
     }
 
-    @GetMapping("/estado/{id}")
-    public String mostrarCambiarEstado(@PathVariable Long id, Model model) {
-        Cita cita = citas.stream().filter(c -> c.getId().equals(id)).findFirst().orElse(new Cita());
+
+    @GetMapping("/nuevo")
+    public String nuevo(Model model) {
         model.addAttribute("paginaActiva", "citas");
-        model.addAttribute("cita", cita);
-        return "admin/cambiar-estado";
+        model.addAttribute("servicios", servicioService.listarActivos());
+        model.addAttribute("horarios", horarioService.listarHorarios(true));
+        model.addAttribute("hoy", LocalDate.now());
+        return "admin/nueva-cita";
     }
 
-    @PostMapping("/estado/guardar")
-    public String guardarEstado(@ModelAttribute Cita cita) {
-        citas.stream()
-                .filter(c -> c.getId().equals(cita.getId()))
-                .findFirst()
-                .ifPresent(c -> c.setEstado(cita.getEstado()));
+    @PostMapping("/crear")
+    public String crear(@RequestParam Long servicioId,
+                        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fecha,
+                        @RequestParam String hora,
+                        @RequestParam String nombre,
+                        @RequestParam String dni,
+                        @RequestParam String telefono,
+                        @RequestParam String email,
+                        @RequestParam String mascota,
+                        @RequestParam String especie,
+                        @RequestParam(defaultValue = "") String raza,
+                        @RequestParam(defaultValue = "0") int edad,
+                        @RequestParam(defaultValue = "meses") String unidadEdad,
+                        @RequestParam(defaultValue = "") String sexo,
+                        @RequestParam(required = false) Double peso,
+                        @RequestParam String metodoPago) {
+
+        int edadMeses = "anios".equals(unidadEdad) ? edad * 12 : edad;   // se guarda siempre en meses
+
+        Cita cita = reservaService.reservar(servicioId, fecha, hora, nombre, dni, telefono,
+                email, mascota, especie, raza, edadMeses, sexo, peso, metodoPago);
+
+        if (cita == null) return "redirect:/admin/citas/nuevo?error=true";
         return "redirect:/admin/citas";
     }
 
-    @GetMapping("/cancelar/{id}")
-    public String cancelar(@PathVariable Long id) {
-        citas.stream()
-                .filter(c -> c.getId().equals(id))
-                .findFirst()
-                .ifPresent(c -> c.setEstado("Cancelada"));
+    @GetMapping("/editar/{id}")
+    public String editar(@PathVariable Long id, Model model) {
+        cargarListas(model);
+        model.addAttribute("cita", citaService.buscarPorId(id));
+        return "admin/formulario-cita";
+    }
+
+    @PostMapping("/guardar")
+    public String guardar(@Valid @ModelAttribute Cita cita, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            cargarListas(model);
+            return "admin/formulario-cita";
+        }
+        citaService.guardar(cita);
+        return "redirect:/admin/citas";
+    }
+
+    // D - Eliminar (borrado real)
+    @GetMapping("/eliminar/{id}")
+    public String eliminar(@PathVariable Long id) {
+        citaService.eliminar(id);
         return "redirect:/admin/citas";
     }
 }

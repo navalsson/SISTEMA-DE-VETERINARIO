@@ -1,8 +1,12 @@
 package com.PatitasFelices.SistemaDeVeterinario.Controller;
 
 import com.PatitasFelices.SistemaDeVeterinario.Model.Servicio;
+import com.PatitasFelices.SistemaDeVeterinario.service.ServicioService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import jakarta.validation.Valid;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -11,61 +15,49 @@ import java.util.List;
 @Controller
 @RequestMapping("/admin/servicios")
 public class ServicioController {
-    private List<Servicio> servicios = new ArrayList<>();
-    private Long siguienteId = 1L;
 
-    public ServicioController() {
-        servicios.add(new Servicio(siguienteId++, "Consulta Médica General", "Servicio Médico", 30.00, "Activo"));
-        servicios.add(new Servicio(siguienteId++, "Vacunación y Refuerzo", "Servicio Médico", 80.00, "Activo"));
-        servicios.add(new Servicio(siguienteId++, "Baño y Corte de Uñas", "Estética", 50.00, "Activo"));
-    }
+    @Autowired
+    private ServicioService servicioService;
 
     @GetMapping
     public String listar(Model model) {
         model.addAttribute("paginaActiva", "servicios");
-        model.addAttribute("servicios", servicios);
+        model.addAttribute("servicios", servicioService.listar());
         return "admin/servicios";
     }
 
     @GetMapping("/nuevo")
-    public String mostrarFormularioNuevo(Model model) {
+    public String nuevo(Model model) {
         model.addAttribute("paginaActiva", "servicios");
         model.addAttribute("servicio", new Servicio());
         return "admin/formulario-servicio";
     }
 
     @GetMapping("/editar/{id}")
-    public String mostrarFormularioEditar(@PathVariable Long id, Model model) {
-        Servicio servicio = servicios.stream()
-                .filter(s -> s.getId().equals(id))
-                .findFirst()
-                .orElse(new Servicio());
-
+    public String editar(@PathVariable Long id, Model model) {
         model.addAttribute("paginaActiva", "servicios");
-        model.addAttribute("servicio", servicio);
+        model.addAttribute("servicio", servicioService.buscarPorId(id));
         return "admin/formulario-servicio";
     }
 
     @PostMapping("/guardar")
-    public String guardar(@ModelAttribute Servicio servicio) {
-        if (servicio.getId() == null) {
-            servicio.setId(siguienteId++);
-            servicios.add(servicio);
-        } else {
-            servicios.removeIf(s -> s.getId().equals(servicio.getId()));
-            servicios.add(servicio);
+    public String guardar(@Valid @ModelAttribute Servicio servicio, BindingResult result, Model model) {
+
+        Servicio existente = servicioService.buscarPorNombre(servicio.getNombre());
+        if (existente != null && !existente.getId().equals(servicio.getId())) {
+            result.rejectValue("nombre", "duplicado", "Ya existe un servicio con ese nombre");
         }
+        if (result.hasErrors()) {
+            model.addAttribute("paginaActiva", "servicios");
+            return "admin/formulario-servicio";
+        }
+        servicioService.guardar(servicio);
         return "redirect:/admin/servicios";
     }
 
     @GetMapping("/eliminar/{id}")
     public String eliminar(@PathVariable Long id) {
-        servicios.removeIf(s -> s.getId().equals(id));
+        servicioService.eliminar(id);
         return "redirect:/admin/servicios";
-    }
-
-    // Método auxiliar público para que CitaController pueda usar esta lista
-    public List<Servicio> obtenerListaServicios() {
-        return servicios;
     }
 }

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Nueva Cita | Patitas Felices</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div th:replace="~{fragments/layout-admin :: header}"></div>
+
+<div class="d-flex">
+    <div th:replace="~{fragments/layout-admin :: sidebar(${paginaActiva})}"></div>
+
+    <main class="flex-grow-1 p-4">
+        <h1 class="h4 fw-bold mb-3" style="color:#6C4E31;">Nueva Cita</h1>
+
+        <div class="alert alert-danger small" style="max-width:600px;" th:if="${param.error}">
+            No se pudo crear la cita: el horario está ocupado, la fecha ya pasó, es domingo
+            o es un horario exclusivo para clientes VIP.
+        </div>
+
+        <div class="card border-0 shadow-sm p-4" style="max-width:600px;">
+            <form th:action="@{/admin/citas/crear}" method="post">
+
+                <h2 class="h6 fw-bold mb-3" style="color:#6C4E31;">Datos del Cliente</h2>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label for="nombre" class="form-label fw-bold small">Nombre completo</label>
+                        <input type="text" class="form-control" id="nombre" name="nombre"
+                               placeholder="Ej. Juan Pérez" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="dni" class="form-label fw-bold small">DNI</label>
+                        <input type="text" class="form-control" id="dni" name="dni" maxlength="8" pattern="\d{8}" title="El DNI debe tener 8 dígitos"
+                               placeholder="Ej. 45678912" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="telefono" class="form-label fw-bold small">Teléfono</label>
+                        <input type="tel" class="form-control" id="telefono" pattern="\d{9}" title="El teléfono debe tener 9 dígitos" name="telefono"
+                               placeholder="Ej. 987654321" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="email" class="form-label fw-bold small">Email</label>
+                        <input type="email" class="form-control" id="email" name="email"
+                               placeholder="Ej. juan@example.com" required>
+                    </div>
+                </div>
+
+                <h2 class="h6 fw-bold mb-3" style="color:#6C4E31;">Datos de la Mascota</h2>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label for="mascota" class="form-label fw-bold small">Nombre de la mascota</label>
+                        <input type="text" class="form-control" id="mascota" name="mascota"
+                               placeholder="Ej. Firulais" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="especie" class="form-label fw-bold small">Especie</label>
+                        <select class="form-select" id="especie" name="especie" required>
+                            <option value="">Selecciona</option>
+                            <option value="Perro">Perro</option>
+                            <option value="Gato">Gato</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="raza" class="form-label fw-bold small">Raza</label>
+                        <input type="text" class="form-control" id="raza" name="raza" placeholder="Ej. Labrador">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="edad" class="form-label fw-bold small">Edad</label>
+                        <div class="input-group">
+                            <input type="number" class="form-control" id="edad" name="edad" min="0"
+                                   placeholder="Ej. 5" required>
+                            <select name="unidadEdad" class="form-select" style="max-width:95px;" aria-label="Unidad de edad">
+                                <option value="meses" selected>Meses</option>
+                                <option value="anios">Años</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <label for="sexo" class="form-label fw-bold small">Sexo</label>
+                        <select class="form-select" id="sexo" name="sexo">
+                            <option value="">--</option>
+                            <option value="Macho">Macho</option>
+                            <option value="Hembra">Hembra</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="peso" class="form-label fw-bold small">Peso (kg)</label>
+                        <input type="number" step="0.1" class="form-control" id="peso" name="peso"
+                               placeholder="Ej. 12.5">
+                    </div>
+                </div>
+
+                <h2 class="h6 fw-bold mb-3" style="color:#6C4E31;">Datos de la Cita</h2>
+                <div class="row g-3 mb-3">
+                    <div class="col-12">
+                        <label for="servicioId" class="form-label fw-bold small">Servicio</label>
+                        <select class="form-select" id="servicioId" name="servicioId" required>
+                            <option value="">Selecciona un servicio</option>
+                            <option th:each="s : ${servicios}" th:value="${s.id}"
+                                    th:text="${s.nombre} + ' - S/ ' + ${#numbers.formatDecimal(s.precio, 1, 2)}"></option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="fecha" class="form-label fw-bold small">Fecha</label>
+                        <input type="date" class="form-control" id="fecha" name="fecha"
+                               th:min="${hoy}" th:value="${hoy}" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="hora" class="form-label fw-bold small">Hora</label>
+                        <select class="form-select" id="hora" name="hora" required>
+                            <option value="">Selecciona</option>
+                            <option th:each="h : ${horarios}" th:value="${h}" th:text="${h}"></option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="metodoPago" class="form-label fw-bold small">Método de pago</label>
+                        <select class="form-select" id="metodoPago" name="metodoPago" required>
+                            <option value="Efectivo">Efectivo</option>
+                            <option value="Tarjeta">Tarjeta (5% dscto)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="alert alert-light border small">
+                    El monto se calcula automáticamente con las reglas de negocio.
+                    Si el DNI ya existe, se reutiliza el cliente y la mascota.
+                </div>
+
+                <button type="submit" class="btn text-white fw-bold" style="background-color:#2E7D32;">
+                    Guardar
+                </button>
+                <a href="/admin/citas" class="btn btn-secondary">Cancelar</a>
+            </form>
+        </div>
+    </main>
+</div>
+
+<div th:replace="~{fragments/layout-admin :: footer}"></div>
+
+</body>
+</html>

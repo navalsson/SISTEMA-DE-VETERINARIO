@@ -30,7 +30,7 @@
                     <thead class="table-light">
                     <tr>
                         <th>Mascota</th><th>Especie</th><th>Raza</th><th>Edad</th>
-                        <th>Sexo</th><th>Peso (kg)</th><th>Dueño</th><th>Acciones</th>
+                        <th>Sexo</th><th>Peso (kg)</th><th>Dueño</th><th>Beneficio</th><th>Acciones</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -38,12 +38,17 @@
                         <td th:text="${mascota.nombre}"></td>
                         <td th:text="${mascota.especie}"></td>
                         <td th:text="${mascota.raza}"></td>
-                        <td th:text="${mascota.edad}"></td>
+                        <td th:text="${mascota.edadTexto}"></td>
                         <td th:text="${mascota.sexo}"></td>
                         <td th:text="${mascota.peso}"></td>
                         <td>
                             <span th:each="cliente : ${clientes}" th:if="${cliente.id == mascota.clienteId}"
                                   th:text="${cliente.nombre}"></span>
+                        </td>
+                        <td>
+                         <span th:if="${reglas.tieneBanoGratis(mascota)}"
+                               class="badge bg-primary">Baño y Corte de Uñas gratis</span>
+                            <small class="text-muted" th:unless="${reglas.tieneBanoGratis(mascota)}">-</small>
                         </td>
                         <td>
                             <a th:href="@{/admin/mascotas/editar/{id}(id=${mascota.id})}"
