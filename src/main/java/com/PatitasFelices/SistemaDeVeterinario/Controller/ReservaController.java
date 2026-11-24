@@ -1,9 +1,11 @@
 package com.PatitasFelices.SistemaDeVeterinario.Controller;
 
 import com.PatitasFelices.SistemaDeVeterinario.Model.Cita;
+import com.PatitasFelices.SistemaDeVeterinario.Model.Cliente;
 import com.PatitasFelices.SistemaDeVeterinario.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +21,12 @@ public class ReservaController {
     @Autowired private ServicioService servicioService;
     @Autowired private HorarioService horarioService;
     @Autowired private ReservaService reservaService;
+    @Autowired private ClienteService clienteService;
+
+
+    private Cliente clienteLogueado(Authentication auth) {
+        return auth == null ? null : clienteService.buscarPorUsuario(auth.getName());
+    }
 
     @GetMapping("/reserva")
     public String entrada(@RequestParam(required = false) Long servicioId) {
@@ -36,17 +44,18 @@ public class ReservaController {
     @GetMapping("/reserva2")
     public String paso2(@RequestParam Long servicioId,
                         @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fecha,
-                        @RequestParam(required = false, defaultValue = "") String dni,
+                        Authentication auth,
                         Model model) {
         LocalDate hoy = LocalDate.now();
         if (fecha == null || fecha.isBefore(hoy)) fecha = hoy;
 
-        boolean vip = reservaService.esVip(dni);
+
+        Cliente cliente = clienteLogueado(auth);
+        boolean vip = cliente != null && reservaService.esVip(cliente.getDni());
         boolean domingo = fecha.getDayOfWeek() == DayOfWeek.SUNDAY;
 
         model.addAttribute("servicioId", servicioId);
         model.addAttribute("fecha", fecha);
-        model.addAttribute("dni", dni);
         model.addAttribute("vip", vip);
         model.addAttribute("domingo", domingo);
         model.addAttribute("hoy", hoy);                      // fecha mínima del calendario
@@ -60,21 +69,23 @@ public class ReservaController {
     public String paso3(@RequestParam Long servicioId,
                         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fecha,
                         @RequestParam String hora,
-                        @RequestParam(required = false, defaultValue = "") String dni,
+                        Authentication auth,
                         Model model) {
+        Cliente cliente = clienteLogueado(auth);
+        if (cliente == null) return "redirect:/usuario/inicio";
+
         model.addAttribute("servicio", servicioService.buscarPorId(servicioId));
         model.addAttribute("fecha", fecha);
         model.addAttribute("hora", hora);
-        model.addAttribute("dni", dni);
+        model.addAttribute("cliente", cliente);   // datos que se muestran ya completos
         return "usuario/reserva3";
     }
 
     @PostMapping("/reserva/confirmar")
-    public String confirmar(@RequestParam Long servicioId,
+    public String confirmar(Authentication auth,
+                            @RequestParam Long servicioId,
                             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fecha,
                             @RequestParam String hora,
-                            @RequestParam String nombre,
-                            @RequestParam String dni,
                             @RequestParam String telefono,
                             @RequestParam String email,
                             @RequestParam String mascota,
@@ -86,9 +97,14 @@ public class ReservaController {
                             @RequestParam(required = false) Double peso,
                             @RequestParam String metodoPago) {
 
-        int edadMeses = "anios".equals(unidadEdad) ? edad * 12 : edad;   // se guarda siempre en meses
 
-        Cita cita = reservaService.reservar(servicioId, fecha, hora, nombre, dni, telefono,
+        Cliente cliente = clienteLogueado(auth);
+        if (cliente == null) return "redirect:/usuario/inicio";
+
+        int edadMeses = "anios".equals(unidadEdad) ? edad * 12 : edad;
+
+        Cita cita = reservaService.reservar(servicioId, fecha, hora,
+                cliente.getNombre(), cliente.getDni(), telefono,
                 email, mascota, especie, raza, edadMeses, sexo, peso, metodoPago);
 
         if (cita == null) {

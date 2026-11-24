@@ -34,26 +34,14 @@
         Ese horario acaba de ser tomado. Elige otro.
     </div>
 
-    <!-- FECHA (calendario) y DNI: al cambiar la fecha se recargan los horarios -->
+
     <form class="card border-0 shadow-sm p-3 mb-4" th:action="@{/usuario/reserva2}" method="get">
         <input type="hidden" name="servicioId" th:value="${servicioId}">
 
-        <div class="row g-3 align-items-end">
-            <div class="col-md-6">
-                <label for="fecha" class="form-label fw-bold small" style="color:#6C4E31;">Elige la fecha</label>
-                <input type="date" id="fecha" name="fecha" class="form-control"
-                       th:value="${fecha}" th:min="${hoy}" th:max="${maxima}"
-                       onchange="this.form.submit()">
-            </div>
-            <div class="col-md-6">
-                <label for="dni" class="form-label fw-bold small" style="color:#6C4E31;">¿Ya eres cliente? Ingresa tu DNI</label>
-                <div class="input-group">
-                    <input type="text" id="dni" name="dni" class="form-control" maxlength="8"
-                           placeholder="Ej. 45678912" th:value="${dni}">
-                    <button class="btn btn-outline-secondary">Ver horarios</button>
-                </div>
-            </div>
-        </div>
+        <label for="fecha" class="form-label fw-bold small" style="color:#6C4E31;">Elige la fecha</label>
+        <input type="date" id="fecha" name="fecha" class="form-control"
+               th:value="${fecha}" th:min="${hoy}" th:max="${maxima}"
+               onchange="this.form.submit()">
     </form>
 
     <div class="alert alert-light border small" th:if="${vip}">
@@ -80,7 +68,7 @@
 
             <a th:unless="${ocupados.contains(h)}"
                class="btn btn-outline-secondary w-100"
-               th:href="@{/usuario/reserva3(servicioId=${servicioId},fecha=${fecha},hora=${h},dni=${dni})}"
+               th:href="@{/usuario/reserva3(servicioId=${servicioId},fecha=${fecha},hora=${h})}"
                th:text="${h}">09:00</a>
 
         </div>

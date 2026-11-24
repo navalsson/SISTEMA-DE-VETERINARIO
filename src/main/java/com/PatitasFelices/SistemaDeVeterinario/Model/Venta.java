@@ -10,10 +10,15 @@ public class Venta {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "producto_id", nullable = false)
-    private Long productoId;
-    @Column(name = "cliente_id", nullable = false)
-    private Long clienteId;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "producto_id", nullable = false)
+    private Producto producto;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "cliente_id", nullable = false)
+    private Cliente cliente;
+
     private int cantidad;
     private double monto;
     private String metodoPago;
@@ -22,11 +27,11 @@ public class Venta {
     public Venta() {
     }
 
-    public Venta(Long id, Long productoId, Long clienteId, int cantidad,
+    public Venta(Long id, Producto producto, Cliente cliente, int cantidad,
                  double monto, String metodoPago, LocalDateTime fecha) {
         this.id = id;
-        this.productoId = productoId;
-        this.clienteId = clienteId;
+        this.producto = producto;
+        this.cliente = cliente;
         this.cantidad = cantidad;
         this.monto = monto;
         this.metodoPago = metodoPago;
@@ -36,11 +41,11 @@ public class Venta {
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
-    public Long getProductoId() { return productoId; }
-    public void setProductoId(Long productoId) { this.productoId = productoId; }
+    public Producto getProducto() { return producto; }
+    public void setProducto(Producto producto) { this.producto = producto; }
 
-    public Long getClienteId() { return clienteId; }
-    public void setClienteId(Long clienteId) { this.clienteId = clienteId; }
+    public Cliente getCliente() { return cliente; }
+    public void setCliente(Cliente cliente) { this.cliente = cliente; }
 
     public int getCantidad() { return cantidad; }
     public void setCantidad(int cantidad) { this.cantidad = cantidad; }

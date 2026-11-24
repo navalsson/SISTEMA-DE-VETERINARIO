@@ -4,11 +4,13 @@
 
 
 <div th:fragment="header">
-    <header class="navbar navbar-dark px-3 py-2" style="background-color: #6C4E31;">
-        <a class="navbar-brand fw-bold mb-0" href="/admin/metricas">
+    <header class="navbar navbar-dark px-3 py-2" style="background-color:#6C4E31;">
+        <a class="navbar-brand fw-bold mb-0" th:href="@{/admin/metricas}">
             Patitas Felices <span class="badge bg-light text-dark ms-1">Admin</span>
         </a>
-        <a class="text-white text-decoration-none small" href="/admin/login">Cerrar Sesión ⏻</a>
+        <form th:action="@{/logout}" method="post" class="m-0">
+            <button type="submit" class="btn btn-link text-white text-decoration-none small p-0">Cerrar Sesión ⏻</button>
+        </form>
     </header>
 </div>
 
@@ -19,32 +21,42 @@
             <a class="nav-link"
                th:classappend="${paginaActiva == 'metricas'} ? 'active text-white' : ''"
                th:style="${paginaActiva == 'metricas'} ? 'background-color:#6C4E31;' : 'color:#6C4E31;'"
-               href="/admin/metricas">Métricas</a>
+               th:href="@{/admin/metricas}">Métricas</a>
 
             <a class="nav-link"
                th:classappend="${paginaActiva == 'citas'} ? 'active text-white' : ''"
                th:style="${paginaActiva == 'citas'} ? 'background-color:#6C4E31;' : 'color:#6C4E31;'"
-               href="/admin/citas">Gestión de Citas</a>
+               th:href="@{/admin/citas}">Gestión de Citas</a>
 
             <a class="nav-link"
                th:classappend="${paginaActiva == 'servicios'} ? 'active text-white' : ''"
                th:style="${paginaActiva == 'servicios'} ? 'background-color:#6C4E31;' : 'color:#6C4E31;'"
-               href="/admin/servicios">Gestión de Servicios</a>
+               th:href="@{/admin/servicios}">Gestión de Servicios</a>
 
             <a class="nav-link"
                th:classappend="${paginaActiva == 'clientes'} ? 'active text-white' : ''"
                th:style="${paginaActiva == 'clientes'} ? 'background-color:#6C4E31;' : 'color:#6C4E31;'"
-               href="/admin/clientes">Gestión de Usuarios</a>
+               th:href="@{/admin/clientes}">Gestión de Usuarios</a>
 
             <a class="nav-link"
                th:classappend="${paginaActiva == 'mascotas'} ? 'active text-white' : ''"
                th:style="${paginaActiva == 'mascotas'} ? 'background-color:#6C4E31;' : 'color:#6C4E31;'"
-               href="/admin/mascotas">Gestión de Mascotas</a>
+               th:href="@{/admin/mascotas}">Gestión de Mascotas</a>
 
             <a class="nav-link"
                th:classappend="${paginaActiva == 'productos'} ? 'active text-white' : ''"
                th:style="${paginaActiva == 'productos'} ? 'background-color:#6C4E31;' : 'color:#6C4E31;'"
-               href="/admin/productos">Gestión de Farmacia</a>
+               th:href="@{/admin/productos}">Gestión de Farmacia</a>
+
+            <a class="nav-link"
+               th:classappend="${paginaActiva == 'categorias'} ? 'active text-white' : ''"
+               th:style="${paginaActiva == 'categorias'} ? 'background-color:#6C4E31;' : 'color:#6C4E31;'"
+               th:href="@{/admin/categorias}">Gestión de Categorías</a>
+
+            <a class="nav-link"
+               th:classappend="${paginaActiva == 'ventas'} ? 'active text-white' : ''"
+               th:style="${paginaActiva == 'ventas'} ? 'background-color:#6C4E31;' : 'color:#6C4E31;'"
+               th:href="@{/admin/ventas}">Ventas de Farmacia</a>
         </nav>
     </aside>
 </div>

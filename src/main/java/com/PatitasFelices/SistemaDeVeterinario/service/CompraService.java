@@ -41,7 +41,7 @@ public class CompraService {
         producto.setStock(producto.getStock() - cantidad);
         productoService.guardar(producto);
 
-        return ventaService.agregar(new Venta(null, producto.getId(), cliente.getId(),
+        return ventaService.agregar(new Venta(null, producto, cliente,
                 cantidad, monto, metodoPago, LocalDateTime.now()));
     }
 }

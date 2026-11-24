@@ -9,6 +9,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
+import com.PatitasFelices.SistemaDeVeterinario.Model.Venta;
 
 
 @Service
@@ -68,6 +69,18 @@ public class MetricasService {
 
     public List<Long> completadasPorDia() {
         return contar(c -> "Completada".equals(c.getEstado()));
+    }
+
+    public List<Long> unidadesFarmaciaPorDia() {
+        List<Long> lista = new ArrayList<>();
+        for (LocalDate dia : dias()) {
+            long unidades = ventaService.listar().stream()
+                    .filter(v -> v.getFecha() != null && v.getFecha().toLocalDate().equals(dia))
+                    .mapToLong(Venta::getCantidad)
+                    .sum();
+            lista.add(unidades);
+        }
+        return lista;
     }
 
     private List<Long> contar(Predicate<Cita> filtro) {

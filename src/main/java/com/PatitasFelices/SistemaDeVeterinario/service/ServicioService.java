@@ -1,6 +1,7 @@
 package com.PatitasFelices.SistemaDeVeterinario.service;
 
 import com.PatitasFelices.SistemaDeVeterinario.Model.Servicio;
+import com.PatitasFelices.SistemaDeVeterinario.repository.CitaRepository;
 import com.PatitasFelices.SistemaDeVeterinario.repository.ServicioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,9 @@ public class ServicioService {
 
     @Autowired
     private ServicioRepository servicioRepository;
+
+    @Autowired
+    private CitaRepository citaRepository;
 
     public List<Servicio> listar() {
         return servicioRepository.findAll();
@@ -30,10 +34,16 @@ public class ServicioService {
         return servicioRepository.save(s);
     }
 
+
+    public String motivoNoEliminar(Long id) {
+        if (citaRepository.existsByServicioId(id))
+            return "No se puede eliminar el servicio: tiene citas registradas. Puedes ponerlo como Inactivo.";
+        return null;
+    }
+
     public void eliminar(Long id) {
         servicioRepository.deleteById(id);
     }
-
 
     public Servicio buscarPorNombre(String nombre) {
         if (nombre == null) return null;

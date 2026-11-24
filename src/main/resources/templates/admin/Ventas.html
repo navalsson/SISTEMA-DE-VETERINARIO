@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Ventas de Farmacia | Patitas Felices</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div th:replace="~{fragments/layout-admin :: header}"></div>
+
+<div class="d-flex">
+    <div th:replace="~{fragments/layout-admin :: sidebar(${paginaActiva})}"></div>
+
+    <main class="flex-grow-1 p-4">
+        <section class="mb-3">
+            <h1 class="h4 fw-bold mb-1" style="color:#6C4E31;">Ventas de Farmacia</h1>
+            <p class="text-muted small mb-0">Compras de la farmacia realizadas por los clientes.</p>
+        </section>
+
+        <div class="card border-0 shadow-sm">
+            <div class="table-responsive">
+                <table class="table align-middle mb-0">
+                    <thead class="table-light">
+                    <tr>
+                        <th>N°</th><th>Fecha</th><th>Cliente</th><th>Producto</th>
+                        <th>Cantidad</th><th>Método de Pago</th><th>Total</th><th>Acciones</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="venta : ${ventas}">
+                        <td th:text="${venta.id}"></td>
+                        <td th:text="${venta.fecha != null} ? ${#temporals.format(venta.fecha, 'dd/MM/yyyy HH:mm')} : '-'"></td>
+                        <td>
+                            <span th:text="${venta.cliente.nombre}"></span><br>
+                            <small class="text-muted" th:text="'DNI ' + ${venta.cliente.dni}"></small>
+                        </td>
+                        <td th:text="${venta.producto.nombre}"></td>
+                        <td th:text="${venta.cantidad}"></td>
+                        <td>
+                            <span th:if="${venta.metodoPago == 'Tarjeta'}"
+                                  class="badge text-white" style="background-color:#2E7D32;">Tarjeta (5% dscto)</span>
+                            <span th:unless="${venta.metodoPago == 'Tarjeta'}"
+                                  class="badge bg-secondary" th:text="${venta.metodoPago}">Efectivo</span>
+                        </td>
+                        <td>
+                            <strong th:text="'S/ ' + ${#numbers.formatDecimal(venta.monto, 1, 2)}"></strong>
+                        </td>
+                        <td>
+                            <a th:href="@{/admin/ventas/editar/{id}(id=${venta.id})}"
+                               class="btn btn-sm" style="border:1px solid #6C4E31; color:#6C4E31;">Editar</a>
+                            <form th:action="@{/admin/ventas/eliminar/{id}(id=${venta.id})}" method="post"
+                                  class="d-inline"
+                                  onsubmit="return confirm('¿Anular esta venta? El stock volverá al producto y se descontará del gasto del cliente.')">
+                                <button type="submit" class="btn btn-sm btn-outline-danger">Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="alert text-center mt-3"
+             style="background-color:#F9F6F0; color:#6C4E31;"
+             th:if="${#lists.isEmpty(ventas)}">
+            Todavía no hay ventas registradas.
+        </div>
+    </main>
+</div>
+
+<div th:replace="~{fragments/layout-admin :: footer}"></div>
+
+</body>
+</html>

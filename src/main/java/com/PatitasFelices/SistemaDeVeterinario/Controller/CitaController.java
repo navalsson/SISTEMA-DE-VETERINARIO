@@ -1,6 +1,9 @@
 package com.PatitasFelices.SistemaDeVeterinario.Controller;
 
 import com.PatitasFelices.SistemaDeVeterinario.Model.Cita;
+import com.PatitasFelices.SistemaDeVeterinario.Model.Cliente;
+import com.PatitasFelices.SistemaDeVeterinario.Model.Mascota;
+import com.PatitasFelices.SistemaDeVeterinario.Model.Servicio;
 import com.PatitasFelices.SistemaDeVeterinario.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -23,6 +26,7 @@ public class CitaController {
     @Autowired private ReservaService reservaService;
     @Autowired private HorarioService horarioService;
 
+
     private void cargarListas(Model model) {
         model.addAttribute("paginaActiva", "citas");
         model.addAttribute("clientes", clienteService.listar());
@@ -31,16 +35,23 @@ public class CitaController {
     }
 
 
+    private void asegurarRelaciones(Cita cita) {
+        if (cita.getCliente() == null) cita.setCliente(new Cliente());
+        if (cita.getMascota() == null) cita.setMascota(new Mascota());
+        if (cita.getServicio() == null) cita.setServicio(new Servicio());
+    }
+
+
     @GetMapping
     public String listar(Model model) {
-        cargarListas(model);
+        model.addAttribute("paginaActiva", "citas");
         model.addAttribute("citas", citaService.listar());
         return "admin/citas";
     }
 
     @GetMapping("/ver/{id}")
     public String verDetalle(@PathVariable Long id, Model model) {
-        cargarListas(model);
+        model.addAttribute("paginaActiva", "citas");
         model.addAttribute("cita", citaService.buscarPorId(id));
         return "admin/detalle-cita";
     }
@@ -84,22 +95,48 @@ public class CitaController {
     @GetMapping("/editar/{id}")
     public String editar(@PathVariable Long id, Model model) {
         cargarListas(model);
-        model.addAttribute("cita", citaService.buscarPorId(id));
+        Cita cita = citaService.buscarPorId(id);
+        asegurarRelaciones(cita);
+        model.addAttribute("cita", cita);
         return "admin/formulario-cita";
     }
 
     @PostMapping("/guardar")
     public String guardar(@Valid @ModelAttribute Cita cita, BindingResult result, Model model) {
+        asegurarRelaciones(cita);
+
+
+        if (cita.getCliente().getId() == null)
+            result.rejectValue("cliente", "requerido", "Selecciona un cliente");
+        if (cita.getMascota().getId() == null)
+            result.rejectValue("mascota", "requerido", "Selecciona una mascota");
+        if (cita.getServicio().getId() == null)
+            result.rejectValue("servicio", "requerido", "Selecciona un servicio");
+
+        // Integridad: la mascota debe pertenecer al cliente elegido
+        if (!result.hasErrors()) {
+            Mascota m = mascotaService.buscarPorId(cita.getMascota().getId());
+            if (m.getId() == null || m.getCliente().getId() == null
+                    || !m.getCliente().getId().equals(cita.getCliente().getId())) {
+                result.rejectValue("mascota", "dueno", "La mascota no pertenece al cliente seleccionado");
+            }
+        }
+
         if (result.hasErrors()) {
             cargarListas(model);
             return "admin/formulario-cita";
         }
+
+
+        cita.setCliente(clienteService.buscarPorId(cita.getCliente().getId()));
+        cita.setMascota(mascotaService.buscarPorId(cita.getMascota().getId()));
+        cita.setServicio(servicioService.buscarPorId(cita.getServicio().getId()));
         citaService.guardar(cita);
         return "redirect:/admin/citas";
     }
 
-    // D - Eliminar (borrado real)
-    @GetMapping("/eliminar/{id}")
+
+    @PostMapping("/eliminar/{id}")
     public String eliminar(@PathVariable Long id) {
         citaService.eliminar(id);
         return "redirect:/admin/citas";

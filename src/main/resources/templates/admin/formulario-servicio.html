@@ -31,13 +31,14 @@
 
                 <div class="mb-3">
                     <label class="form-label fw-bold small">Categoría</label>
-                    <select class="form-select" th:field="*{categoria}" required>
+                    <select class="form-select" th:field="*{categoria.id}" required>
                         <option value="">Selecciona</option>
-                        <option value="Servicio Médico">Servicio Médico</option>
-                        <option value="Estética">Estética</option>
-                        <option value="Farmacia">Farmacia</option>
+                        <option th:each="c : ${categorias}" th:value="${c.id}" th:text="${c.nombre}"></option>
                     </select>
                     <div class="text-danger small mt-1" th:if="${#fields.hasErrors('categoria')}" th:errors="*{categoria}"></div>
+                    <div class="form-text" th:if="${#lists.isEmpty(categorias)}">
+                        No hay categorías de tipo Servicio. Créalas primero en Gestión de Categorías.
+                    </div>
                 </div>
 
                 <div class="mb-3">

@@ -30,15 +30,17 @@ public class Mascota {
     @DecimalMax(value = "150.0", message = "El peso máximo es 150 kg")
     private double peso;
 
+
     @NotNull(message = "Selecciona el dueño")
-    @Column(name = "cliente_id", nullable = false)
-    private Long clienteId;
+    @ManyToOne
+    @JoinColumn(name = "cliente_id", nullable = false)
+    private Cliente cliente;
 
     public Mascota() {
     }
 
     public Mascota(Long id, String nombre, String especie, String raza,
-                   int edad, String sexo, double peso, Long clienteId) {
+                   int edad, String sexo, double peso, Cliente cliente) {
         this.id = id;
         this.nombre = nombre;
         this.especie = especie;
@@ -46,7 +48,7 @@ public class Mascota {
         this.edad = edad;
         this.sexo = sexo;
         this.peso = peso;
-        this.clienteId = clienteId;
+        this.cliente = cliente;
     }
 
     public Long getId() { return id; }
@@ -70,7 +72,7 @@ public class Mascota {
     public double getPeso() { return peso; }
     public void setPeso(double peso) { this.peso = peso; }
 
-    // Edad para mostrar: "5 meses", "1 año", "2 años 3 meses"
+
     public String getEdadTexto() {
         if (edad < 12) return edad + (edad == 1 ? " mes" : " meses");
         int anios = edad / 12, meses = edad % 12;
@@ -79,6 +81,6 @@ public class Mascota {
         return texto;
     }
 
-    public Long getClienteId() { return clienteId; }
-    public void setClienteId(Long clienteId) { this.clienteId = clienteId; }
+    public Cliente getCliente() { return cliente; }
+    public void setCliente(Cliente cliente) { this.cliente = cliente; }
 }
