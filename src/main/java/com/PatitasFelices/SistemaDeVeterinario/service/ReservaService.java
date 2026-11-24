@@ -36,6 +36,7 @@ public class ReservaService {
         Servicio servicio = servicioService.buscarPorId(servicioId);
         if (servicio.getId() == null) return null;
 
+        // 1) Cliente
         Cliente cliente;
         if (existente != null) {
             cliente = existente;
@@ -46,27 +47,28 @@ public class ReservaService {
                     new Cliente(null, nombre, dni, telefono, email, 0, 0.0, LocalDate.now(), 0));
         }
 
-
-        double monto = reglaService.calcularMonto(cliente, servicio.getPrecio(), metodoPago);
-
-
-        cliente.setCitasEsteMes(cliente.getCitasEsteMes() + 1);
-        cliente.setGastoTotal(cliente.getGastoTotal() + monto);
-        clienteService.guardar(cliente);
-
+        String sexoFinal = (sexo == null || sexo.isBlank()) ? null : sexo;
         Mascota mascota = mascotaService.buscarPorDuenoYNombre(cliente.getId(), nombreMascota);
         if (mascota == null) {
             mascota = mascotaService.guardar(
-                    new Mascota(null, nombreMascota, especie, raza, edad, sexo,
-                            peso != null ? peso : 0.0, cliente.getId()));
+                    new Mascota(null, nombreMascota, especie, raza, edad, sexoFinal,
+                            peso != null ? peso : 0.0, cliente));
         } else {
-
             mascota.setEdad(edad);
             mascota.setPeso(peso != null ? peso : mascota.getPeso());
-            mascotaService.guardar(mascota);
+            mascota = mascotaService.guardar(mascota);
         }
 
-        return citaService.agregar(new Cita(null, cliente.getId(), mascota.getId(), servicioId,
+
+        boolean gratisPorCitas = reglaService.tieneServicioGratis(cliente);   // RN-04
+        double monto = reglaService.calcularMonto(cliente, mascota, servicio, metodoPago);
+
+
+        cliente.setCitasEsteMes(gratisPorCitas ? 0 : cliente.getCitasEsteMes() + 1);
+        cliente.setGastoTotal(cliente.getGastoTotal() + monto);
+        clienteService.guardar(cliente);
+
+        return citaService.agregar(new Cita(null, cliente, mascota, servicio,
                 LocalDateTime.of(fecha, LocalTime.parse(hora)),
                 "Confirmada", metodoPago, monto));
     }

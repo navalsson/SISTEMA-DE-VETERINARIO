@@ -20,6 +20,7 @@ public class MetricasController {
         model.addAttribute("ingresos", metricasService.ingresosPorDia());
         model.addAttribute("canceladas", metricasService.canceladasPorDia());
         model.addAttribute("completadas", metricasService.completadasPorDia());
+        model.addAttribute("unidadesFarmacia", metricasService.unidadesFarmaciaPorDia());
         return "admin/metricas";
     }
 }

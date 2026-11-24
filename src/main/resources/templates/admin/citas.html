@@ -31,18 +31,9 @@
                     </thead>
                     <tbody>
                     <tr th:each="cita : ${citas}">
-                        <td>
-                            <span th:each="cliente : ${clientes}" th:if="${cliente.id == cita.clienteId}"
-                                  th:text="${cliente.nombre}"></span>
-                        </td>
-                        <td>
-                            <span th:each="mascota : ${mascotas}" th:if="${mascota.id == cita.mascotaId}"
-                                  th:text="${mascota.nombre}"></span>
-                        </td>
-                        <td>
-                            <span th:each="servicio : ${servicios}" th:if="${servicio.id == cita.servicioId}"
-                                  th:text="${servicio.nombre}"></span>
-                        </td>
+                        <td th:text="${cita.cliente.nombre}"></td>
+                        <td th:text="${cita.mascota.nombre}"></td>
+                        <td th:text="${cita.servicio.nombre}"></td>
                         <td th:text="${#temporals.format(cita.fechaHora, 'dd MMM - hh:mm a')}"></td>
                         <td>
                             <span th:if="${cita.metodoPago == 'Tarjeta'}"
@@ -67,9 +58,10 @@
                                class="btn btn-sm" style="border:1px solid #6C4E31; color:#6C4E31;">Ver</a>
                             <a th:href="@{/admin/citas/editar/{id}(id=${cita.id})}"
                                class="btn btn-sm" style="border:1px solid #6C4E31; color:#6C4E31;">Editar</a>
-                            <a th:href="@{/admin/citas/eliminar/{id}(id=${cita.id})}"
-                               class="btn btn-sm btn-outline-danger"
-                               onclick="return confirm('¿Seguro que deseas eliminar esta cita?')">Eliminar</a>
+                            <form th:action="@{/admin/citas/eliminar/{id}(id=${cita.id})}" method="post"
+                                  class="d-inline" onsubmit="return confirm('¿Seguro que deseas eliminar esta cita?')">
+                                <button type="submit" class="btn btn-sm btn-outline-danger">Eliminar</button>
+                            </form>
                         </td>
                     </tr>
                     </tbody>

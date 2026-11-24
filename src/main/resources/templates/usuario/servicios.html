@@ -22,7 +22,7 @@
 
 <main class="container py-5 flex-grow-1">
 
-    <!-- ==================== SERVICIOS ==================== -->
+
     <div class="row g-4">
 
         <div class="col-md-6 col-lg-4"
@@ -40,7 +40,7 @@
                     <h5 class="card-title fw-bold" style="color:#6C4E31;"
                         th:text="${servicio.nombre}">Nombre del servicio</h5>
 
-                    <p class="small text-muted mb-2" th:text="${servicio.categoria}">Categoría</p>
+                    <p class="small text-muted mb-2" th:text="${servicio.categoria.nombre}">Categoría</p>
 
                     <p class="card-text"
                        th:text="${servicio.descripcion != null and !servicio.descripcion.isEmpty()} ? ${servicio.descripcion} : 'Consulta con nosotros para más información.'">
@@ -91,7 +91,7 @@
 
                         <span class="badge align-self-start mb-2 text-white"
                               style="background-color:#6C4E31;"
-                              th:text="${producto.categoria}">Categoría</span>
+                              th:text="${producto.categoria.nombre}">Categoría</span>
 
                         <h5 class="card-title fw-bold" style="color:#6C4E31;"
                             th:text="${producto.nombre}">Nombre del producto</h5>

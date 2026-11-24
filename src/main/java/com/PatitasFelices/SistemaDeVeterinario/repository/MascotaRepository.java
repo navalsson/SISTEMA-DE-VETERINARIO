@@ -8,4 +8,6 @@ import java.util.Optional;
 public interface MascotaRepository extends JpaRepository<Mascota, Long> {
 
     Optional<Mascota> findByClienteIdAndNombreIgnoreCase(Long clienteId, String nombre);
+
+    boolean existsByClienteId(Long clienteId);
 }

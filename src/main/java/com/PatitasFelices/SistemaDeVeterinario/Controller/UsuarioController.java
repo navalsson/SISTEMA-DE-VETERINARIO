@@ -18,7 +18,7 @@ public class UsuarioController {
     @GetMapping("/servicios")
     public String mostrarServicios(Model model) {
         model.addAttribute("servicios", servicioService.listar());
-        model.addAttribute("productos", productoService.listar());   // catálogo de farmacia
+        model.addAttribute("productos", productoService.listar());
         return "usuario/servicios";
     }
 }

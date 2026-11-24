@@ -20,6 +20,8 @@
             </a>
         </section>
 
+        <div class="alert alert-danger small" th:if="${error}" th:text="${error}"></div>
+
         <div class="card border-0 shadow-sm">
             <div class="table-responsive">
                 <table class="table align-middle mb-0">
@@ -42,7 +44,6 @@
                         <td th:text="${cliente.citasCompletadas}"></td>
                         <td th:text="${cliente.citasEsteMes}"></td>
 
-                       
                         <td>
                             <strong th:text="'S/ ' + ${#numbers.formatDecimal(cliente.gastoTotal, 1, 2)}"></strong>
                             <br>
@@ -60,9 +61,10 @@
                         <td>
                             <a th:href="@{/admin/clientes/editar/{id}(id=${cliente.id})}"
                                class="btn btn-sm" style="border:1px solid #6C4E31; color:#6C4E31;">Editar</a>
-                            <a th:href="@{/admin/clientes/eliminar/{id}(id=${cliente.id})}"
-                               class="btn btn-sm btn-outline-danger"
-                               onclick="return confirm('¿Seguro que deseas eliminar este cliente?')">Eliminar</a>
+                            <form th:action="@{/admin/clientes/eliminar/{id}(id=${cliente.id})}" method="post"
+                                  class="d-inline" onsubmit="return confirm('¿Seguro que deseas eliminar este cliente?')">
+                                <button type="submit" class="btn btn-sm btn-outline-danger">Eliminar</button>
+                            </form>
                         </td>
                     </tr>
                     </tbody>

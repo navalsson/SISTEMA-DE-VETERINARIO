@@ -4,4 +4,8 @@ import com.PatitasFelices.SistemaDeVeterinario.Model.Venta;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface VentaRepository extends JpaRepository<Venta, Long> {
+
+    boolean existsByProductoId(Long productoId);
+
+    boolean existsByClienteId(Long clienteId);
 }

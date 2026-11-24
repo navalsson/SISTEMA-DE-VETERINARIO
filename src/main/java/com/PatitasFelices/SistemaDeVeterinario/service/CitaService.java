@@ -43,7 +43,7 @@ public class CitaService {
         Cita anterior = citaRepository.findById(c.getId()).orElse(null);
         if (anterior != null && "Completada".equals(c.getEstado())
                 && !"Completada".equals(anterior.getEstado())) {
-            sumarCompletada(c.getClienteId());
+            sumarCompletada(c.getCliente().getId());
         }
         return citaRepository.save(c);
     }

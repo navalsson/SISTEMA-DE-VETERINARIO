@@ -18,21 +18,15 @@
         <div class="card border-0 shadow-sm p-4" style="max-width:500px;">
             <p class="d-flex justify-content-between small border-bottom pb-2">
                 <span>Cliente</span>
-                <strong>
-                    <span th:each="cliente : ${clientes}" th:if="${cliente.id == cita.clienteId}" th:text="${cliente.nombre}"></span>
-                </strong>
+                <strong th:text="${cita.cliente.nombre}"></strong>
             </p>
             <p class="d-flex justify-content-between small border-bottom pb-2">
                 <span>Mascota</span>
-                <strong>
-                    <span th:each="mascota : ${mascotas}" th:if="${mascota.id == cita.mascotaId}" th:text="${mascota.nombre}"></span>
-                </strong>
+                <strong th:text="${cita.mascota.nombre}"></strong>
             </p>
             <p class="d-flex justify-content-between small border-bottom pb-2">
                 <span>Servicio</span>
-                <strong>
-                    <span th:each="servicio : ${servicios}" th:if="${servicio.id == cita.servicioId}" th:text="${servicio.nombre}"></span>
-                </strong>
+                <strong th:text="${cita.servicio.nombre}"></strong>
             </p>
             <p class="d-flex justify-content-between small border-bottom pb-2">
                 <span>Fecha y Hora</span>

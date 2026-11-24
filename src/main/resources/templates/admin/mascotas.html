@@ -20,6 +20,8 @@
             </a>
         </section>
 
+        <div class="alert alert-danger small" th:if="${error}" th:text="${error}"></div>
+
         <div class="alert alert-light border small mb-3">
             <strong>Restricción de Especies:</strong> el sistema solo admite el registro de perros y gatos.
         </div>
@@ -41,21 +43,19 @@
                         <td th:text="${mascota.edadTexto}"></td>
                         <td th:text="${mascota.sexo}"></td>
                         <td th:text="${mascota.peso}"></td>
+                        <td th:text="${mascota.cliente.nombre}"></td>
                         <td>
-                            <span th:each="cliente : ${clientes}" th:if="${cliente.id == mascota.clienteId}"
-                                  th:text="${cliente.nombre}"></span>
-                        </td>
-                        <td>
-                         <span th:if="${reglas.tieneBanoGratis(mascota)}"
-                               class="badge bg-primary">Baño y Corte de Uñas gratis</span>
+                            <span th:if="${reglas.tieneBanoGratis(mascota)}"
+                                  class="badge bg-primary">Baño y Corte de Uñas gratis</span>
                             <small class="text-muted" th:unless="${reglas.tieneBanoGratis(mascota)}">-</small>
                         </td>
                         <td>
                             <a th:href="@{/admin/mascotas/editar/{id}(id=${mascota.id})}"
                                class="btn btn-sm" style="border:1px solid #6C4E31; color:#6C4E31;">Editar</a>
-                            <a th:href="@{/admin/mascotas/eliminar/{id}(id=${mascota.id})}"
-                               class="btn btn-sm btn-outline-danger"
-                               onclick="return confirm('¿Seguro que deseas eliminar esta mascota?')">Eliminar</a>
+                            <form th:action="@{/admin/mascotas/eliminar/{id}(id=${mascota.id})}" method="post"
+                                  class="d-inline" onsubmit="return confirm('¿Seguro que deseas eliminar esta mascota?')">
+                                <button type="submit" class="btn btn-sm btn-outline-danger">Eliminar</button>
+                            </form>
                         </td>
                     </tr>
                     </tbody>

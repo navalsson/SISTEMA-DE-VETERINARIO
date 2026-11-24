@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/admin/clientes")
@@ -17,7 +18,6 @@ public class ClienteController {
     @Autowired
     private ClienteService clienteService;
     @Autowired private ReglaNegocioService reglaService;
-
 
     @GetMapping
     public String listar(Model model) {
@@ -56,11 +56,14 @@ public class ClienteController {
         return "redirect:/admin/clientes";
     }
 
-    @GetMapping("/eliminar/{id}")
-    public String eliminar(@PathVariable Long id) {
-        clienteService.eliminar(id);
+    @PostMapping("/eliminar/{id}")
+    public String eliminar(@PathVariable Long id, RedirectAttributes ra) {
+        String motivo = clienteService.motivoNoEliminar(id);
+        if (motivo != null) {
+            ra.addFlashAttribute("error", motivo);
+        } else {
+            clienteService.eliminar(id);
+        }
         return "redirect:/admin/clientes";
     }
-
-
 }

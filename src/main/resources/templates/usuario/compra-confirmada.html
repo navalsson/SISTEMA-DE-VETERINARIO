@@ -32,11 +32,11 @@
                             </div>
                             <div class="d-flex justify-content-between border-bottom py-2">
                                 <strong style="color:#6C4E31;">Cliente</strong>
-                                <span th:text="${cliente.nombre}">Cliente</span>
+                                <span th:text="${venta.cliente.nombre}">Cliente</span>
                             </div>
                             <div class="d-flex justify-content-between border-bottom py-2">
                                 <strong style="color:#6C4E31;">Producto</strong>
-                                <span th:text="${producto.nombre}">Producto</span>
+                                <span th:text="${venta.producto.nombre}">Producto</span>
                             </div>
                             <div class="d-flex justify-content-between border-bottom py-2">
                                 <strong style="color:#6C4E31;">Cantidad</strong>
@@ -44,7 +44,7 @@
                             </div>
                             <div class="d-flex justify-content-between border-bottom py-2">
                                 <strong style="color:#6C4E31;">Precio unitario</strong>
-                                <span th:text="'S/ ' + ${#numbers.formatDecimal(producto.precio, 1, 2)}">S/ 0.00</span>
+                                <span th:text="'S/ ' + ${#numbers.formatDecimal(venta.producto.precio, 1, 2)}">S/ 0.00</span>
                             </div>
                             <div class="d-flex justify-content-between border-bottom py-2">
                                 <strong style="color:#6C4E31;">Método de Pago</strong>

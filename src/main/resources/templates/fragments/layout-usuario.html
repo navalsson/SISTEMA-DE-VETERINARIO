@@ -12,7 +12,7 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-                <ul class="navbar-nav">
+                <ul class="navbar-nav align-items-lg-center">
                     <li class="nav-item">
                         <a class="nav-link" th:classappend="${activa == 'inicio'} ? 'active fw-bold' : ''"
                            th:href="@{/usuario/inicio}">Inicio</a>
@@ -33,6 +33,11 @@
                         <a class="btn text-white fw-bold" style="background-color:#2E7D32;"
                            th:href="@{/usuario/reserva}">Reservar Cita</a>
                     </li>
+                    <li class="nav-item ms-lg-2 mt-2 mt-lg-0">
+                        <form th:action="@{/logout}" method="post" class="m-0">
+                            <button type="submit" class="btn btn-outline-light">Cerrar sesión</button>
+                        </form>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -41,9 +46,8 @@
 
 
 <footer th:fragment="footer" class="text-white py-3 mt-auto" style="background-color:#6C4E31;">
-    <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
+    <div class="container text-center text-md-start">
         <p class="mb-0 small">&copy; 2026 Clínica Veterinaria Patitas Felices. Todos los derechos reservados.</p>
-        <a th:href="@{/admin/login}" class="small text-white text-decoration-none">🔒 Acceso Administrador</a>
     </div>
 </footer>
 
